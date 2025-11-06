@@ -22,7 +22,7 @@ body {
 }
 
 header.hero {
-  background: linear-gradient(135deg, rgba(43,108,176,0.95), rgba(47,133,90,0.9));
+  background: linear-gradient(135deg, rgba(43,108,176,0.95), rgba(98, 1, 183, 0.9));
   color: #fff;
   padding: 60px 20px;
   text-align: center;
@@ -177,6 +177,26 @@ ul li {
   justify-content: center;
 }
 
+.form-submit.is-loading {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.form-submit.is-loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 18px;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  animation: button-spin 0.7s linear infinite;
+}
+
 .test-result {
   border-radius: 14px;
   padding: 18px 20px;
@@ -293,7 +313,7 @@ table tbody tr:nth-child(even) {
   display: inline-block;
   padding: 12px 28px;
   border-radius: 999px;
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  background: linear-gradient(135deg, rgba(43,108,176,0.95), rgba(98, 1, 183, 0.9));
   color: #fff;
   text-decoration: none;
   font-weight: 600;
@@ -335,7 +355,16 @@ footer {
     font-size: 0.95rem;
   }
 
-  .highlight {
-    padding: 18px;
+.highlight {
+  padding: 18px;
+  }
+}
+
+@keyframes button-spin {
+  from {
+    transform: translateY(-50%) rotate(0deg);
+  }
+  to {
+    transform: translateY(-50%) rotate(360deg);
   }
 }

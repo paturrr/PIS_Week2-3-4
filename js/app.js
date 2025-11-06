@@ -13,59 +13,76 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const manualTestForm = document.getElementById("manual-test-form");
   const testResultBox = document.getElementById("manual-test-result");
+  const submitButton = manualTestForm?.querySelector(".form-submit");
 
-  if (!manualTestForm || !testResultBox) {
+  if (!manualTestForm || !testResultBox || !submitButton) {
     return;
   }
 
   manualTestForm.addEventListener("submit", (event) => {
     event.preventDefault();
 
-    const formData = new FormData(manualTestForm);
-    const ageValue = Number(formData.get("age"));
-    const incomeValue = Number(formData.get("income"));
-    const age = Number.isFinite(ageValue) ? ageValue : 0;
-    const income = Number.isFinite(incomeValue) ? incomeValue : 0;
-    const hasActiveCard = formData.get("activeCard") === "yes";
-    const creditHistory = formData.get("creditHistory");
+    const originalText =
+      submitButton.dataset.originalText || submitButton.textContent.trim();
+    submitButton.dataset.originalText = originalText;
+    submitButton.disabled = true;
+    submitButton.classList.add("is-loading");
+    submitButton.textContent = "Memproses...";
 
-    const failureReasons = [];
+    window.setTimeout(() => {
+      const formData = new FormData(manualTestForm);
+      const ageValue = Number(formData.get("age"));
+      const incomeValue = Number(formData.get("income"));
+      const age = Number.isFinite(ageValue) ? ageValue : 0;
+      const income = Number.isFinite(incomeValue) ? incomeValue : 0;
+      const hasActiveCard = formData.get("activeCard") === "yes";
+      const creditHistory = formData.get("creditHistory");
 
-    if (creditHistory === "buruk") {
-      failureReasons.push("Riwayat kredit buruk memicu penolakan otomatis.");
-    }
+      const failureReasons = [];
 
-    if (age < 21) {
-      failureReasons.push("Usia pemohon di bawah 21 tahun.");
-    }
+      if (creditHistory === "buruk") {
+        failureReasons.push("Riwayat kredit buruk memicu penolakan otomatis.");
+      }
 
-    if (income < 5000000) {
-      failureReasons.push("Penghasilan bulanan kurang dari Rp5.000.000.");
-    }
+      if (age < 21) {
+        failureReasons.push("Usia pemohon di bawah 21 tahun.");
+      }
 
-    if (hasActiveCard) {
-      failureReasons.push("Pemohon masih memiliki kartu kredit BankSejahtera yang aktif.");
-    }
+      if (income < 5000000) {
+        failureReasons.push("Penghasilan bulanan kurang dari Rp5.000.000.");
+      }
 
-    testResultBox.classList.remove("test-result--approved", "test-result--rejected");
+      if (hasActiveCard) {
+        failureReasons.push(
+          "Pemohon masih memiliki kartu kredit BankSejahtera yang aktif."
+        );
+      }
 
-    if (failureReasons.length === 0) {
-      testResultBox.classList.add("test-result--approved");
-      testResultBox.innerHTML = `
-        <strong>Pengajuan Disetujui</strong>
-        <p>Semua kriteria formal terpenuhi dan tidak ada aturan penolakan mutlak yang dilanggar.</p>
-      `;
-    } else {
-      const reasonItems = failureReasons
-        .map((reason) => `<li>${reason}</li>`)
-        .join("");
+      testResultBox.classList.remove("test-result--approved", "test-result--rejected");
 
-      testResultBox.classList.add("test-result--rejected");
-      testResultBox.innerHTML = `
-        <strong>Pengajuan Ditolak</strong>
-        <p>Berikut alasan keputusan:</p>
-        <ul>${reasonItems}</ul>
-      `;
-    }
+      if (failureReasons.length === 0) {
+        testResultBox.classList.add("test-result--approved");
+        testResultBox.innerHTML = `
+          <strong>Pengajuan Disetujui</strong>
+          <p>Semua kriteria formal terpenuhi dan tidak ada aturan penolakan mutlak yang dilanggar.</p>
+        `;
+      } else {
+        const reasonItems = failureReasons
+          .map((reason) => `<li>${reason}</li>`)
+          .join("");
+
+        testResultBox.classList.add("test-result--rejected");
+        testResultBox.innerHTML = `
+          <strong>Pengajuan Ditolak</strong>
+          <p>Berikut alasan keputusan:</p>
+          <ul>${reasonItems}</ul>
+        `;
+      }
+
+      submitButton.disabled = false;
+      submitButton.classList.remove("is-loading");
+      submitButton.textContent =
+        submitButton.dataset.originalText || "Evaluasi Pengajuan";
+    }, 600);
   });
 });
