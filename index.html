@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Pengujian Sistem Pengajuan Kartu Kredit Online</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="hero">
+    <h1>Pengujian Sistem Pengajuan Kartu Kredit Online</h1>
+    <p>
+      Studi kasus untuk memvalidasi keputusan persetujuan/penolakan otomatis di BankSejahtera.
+      Fokus pada konsistensi aturan bisnis, temuan bug keputusan yang tidak sesuai logika,
+      serta jaminan kualitas melalui teknik pengujian black-box.
+    </p>
+  </header>
+
+  <main class="container">
+    <section>
+      <h2>Gambaran Umum Sistem</h2>
+      <div class="grid-2">
+        <div>
+          <p>
+            Sistem pengajuan kartu kredit online BankSejahtera membantu pemohon mengirim data
+            pribadi dan finansial secara daring. Mesin keputusan akan menyetujui atau menolak
+            pengajuan berdasarkan kriteria formal sebelum meneruskan ke pemeriksa manual.
+          </p>
+          <p>
+            Bug yang ditemukan: sejumlah pengajuan disetujui atau ditolak tidak sesuai logika,
+            sehingga dapat memunculkan risiko operasional, reputasi, dan regulasi.
+          </p>
+        </div>
+        <div>
+          <ul>
+            <li><strong>Target:</strong> Memastikan konsistensi keputusan dengan aturan bisnis.</li>
+            <li><strong>Lingkup:</strong> Validasi input, aturan keputusan, integrasi data kredit.</li>
+            <li><strong>Metode:</strong> Black-box testing, boundary value, decision table.</li>
+            <li><strong>Outcome:</strong> Temuan bug dikonfirmasi dan diberi rekomendasi perbaikan.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Kriteria Approval Formal</h2>
+      <p>Tiga kriteria utama yang wajib terpenuhi sebelum sistem mengeluarkan keputusan <em>approve</em>.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Kriteria</th>
+            <th>Deskripsi</th>
+            <th>Kondisi Ideal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Usia Pemohon</td>
+            <td>Pemohon harus cukup umur untuk kontrak kredit.</td>
+            <td><span class="badge badge--passed">&gt;= 21 tahun</span></td>
+          </tr>
+          <tr>
+            <td>Penghasilan Bulanan</td>
+            <td>Kemampuan bayar minimal sesuai ketentuan bank.</td>
+            <td><span class="badge badge--passed">&gt;= Rp 5.000.000</span></td>
+          </tr>
+          <tr>
+            <td>Kepemilikan Kartu</td>
+            <td>Tidak boleh ada kartu kredit aktif BankSejahtera.</td>
+            <td><span class="badge badge--passed">Tidak memiliki kartu aktif</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="highlight">
+        <strong>Aturan Penolakan Mutlak:</strong> Riwayat kredit buruk (<em>bad credit history</em>) akan menghasilkan
+        penolakan langsung meskipun tiga kriteria utama terpenuhi.
+      </div>
+    </section>
+
+    <section>
+      <h2>Isu &amp; Konsekuensi</h2>
+      <div class="grid-2">
+        <div>
+          <p>
+            Ditemukan bug ketika beberapa pengajuan yang seharusnya ditolak justru disetujui,
+            dan sebaliknya. Hal ini menunjukkan celah dalam logika keputusan otomatis.
+          </p>
+          <ul>
+            <li><strong>Risiko Finansial:</strong> Potensi kredit macet pada pemohon tidak layak.</li>
+            <li><strong>Risiko Regulasi:</strong> Pelanggaran kebijakan internal dan eksternal.</li>
+            <li><strong>Risiko Reputasi:</strong> Ketidakpercayaan nasabah karena inkonsistensi.</li>
+          </ul>
+        </div>
+        <div>
+          <div class="highlight">
+            <strong>Indikasi Bug:</strong><br>
+            &bull; Pemohon dengan riwayat kredit buruk tetap disetujui.<br>
+            &bull; Pemohon memenuhi semua kriteria formal namun ditolak.<br>
+            &bull; Nilai ambang batas usia/penghasilan tidak diproses secara konsisten.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Strategi Pengujian Black-Box</h2>
+      <div class="grid-2">
+        <div>
+          <h3 class="subheading">Teknik yang Digunakan</h3>
+          <ul>
+            <li><strong>Equivalence Partitioning:</strong> Membagi input ke kelas valid/invalid.</li>
+            <li><strong>Boundary Value Analysis:</strong> Menguji batas usia &amp; penghasilan.</li>
+            <li><strong>Decision Table:</strong> Memetakan kombinasi kriteria &amp; hasil keputusan.</li>
+            <li><strong>State Transition:</strong> Memastikan status permohonan mengikuti alur.</li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="subheading">Pendekatan Pelaksanaan</h3>
+          <ul>
+            <li>Menyiapkan data uji representatif (positif, negatif, ekstrem).</li>
+            <li>Menjalankan test case terhadap API/UI pengajuan.</li>
+            <li>Membandingkan hasil sistem vs ekspektasi aturan bisnis.</li>
+            <li>Mencatat bug, bukti, dan rekomendasi perbaikan.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Rencana Test Case</h2>
+      <div class="test-case-grid">
+        <div class="test-case-panel">
+          <h3 class="subheading">Simulasi Manual</h3>
+          <p>Masukkan data pemohon untuk memvalidasi keputusan otomatis sesuai aturan bisnis.</p>
+          <form id="manual-test-form" class="manual-test-form">
+            <div class="form-group">
+              <label for="age">Usia Pemohon</label>
+              <input type="number" id="age" name="age" min="0" placeholder="Contoh: 30" required>
+            </div>
+            <div class="form-group">
+              <label for="income">Penghasilan Bulanan (Rp)</label>
+              <input type="number" id="income" name="income" min="0" step="50000" placeholder="Contoh: 8000000" required>
+            </div>
+            <div class="form-group">
+              <span class="form-label">Status Kepemilikan Kartu Kredit BankSejahtera</span>
+              <div class="radio-group">
+                <label>
+                  <input type="radio" name="activeCard" value="yes" required>
+                  Memiliki kartu aktif
+                </label>
+                <label>
+                  <input type="radio" name="activeCard" value="no" required>
+                  Tidak memiliki kartu aktif
+                </label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="creditHistory">Riwayat Kredit</label>
+              <select id="creditHistory" name="creditHistory" required>
+                <option value="baik">Baik</option>
+                <option value="buruk">Buruk</option>
+              </select>
+            </div>
+            <button type="submit" class="cta-button form-submit">Evaluasi Pengajuan</button>
+          </form>
+          <div id="manual-test-result" class="test-result" aria-live="polite">
+            <p>Isi form lalu klik evaluasi untuk melihat keputusan.</p>
+          </div>
+        </div>
+        <div class="test-case-panel">
+          <h3 class="subheading">Scenario Test Case</h3>
+          <p>Gunakan sampel berikut sebagai acuan saat menurunkan skenario positif, negatif, dan ekstrem.</p>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Skenario</th>
+                  <th>Data Uji Kunci</th>
+                  <th>Ekspektasi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>TC-01</td>
+                  <td>Semua kriteria valid</td>
+                  <td>Usia 30, Penghasilan 8jt, Tidak punya kartu aktif, Riwayat baik</td>
+                  <td><span class="badge badge--passed">Disetujui</span></td>
+                </tr>
+                <tr>
+                  <td>TC-02</td>
+                  <td>Riwayat kredit buruk</td>
+                  <td>Usia 32, Penghasilan 12jt, Tidak punya kartu aktif, Riwayat buruk</td>
+                  <td><span class="badge badge--risk">Ditolak otomatis</span></td>
+                </tr>
+                <tr>
+                  <td>TC-03</td>
+                  <td>Penghasilan di batas minimum</td>
+                  <td>Usia 25, Penghasilan 5jt, Tidak punya kartu aktif, Riwayat baik</td>
+                  <td><span class="badge badge--warning">Disetujui (cek bug)</span></td>
+                </tr>
+                <tr>
+                  <td>TC-04</td>
+                  <td>Tidak memenuhi usia minimal</td>
+                  <td>Usia 20, Penghasilan 6jt, Tidak punya kartu aktif, Riwayat baik</td>
+                  <td><span class="badge badge--risk">Ditolak</span></td>
+                </tr>
+                <tr>
+                  <td>TC-05</td>
+                  <td>Sedang memiliki kartu aktif</td>
+                  <td>Usia 29, Penghasilan 10jt, Punya kartu aktif, Riwayat baik</td>
+                  <td><span class="badge badge--risk">Ditolak</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta">
+      <h3>Siap Menindaklanjuti Temuan?</h3>
+      <p>Gunakan hasil pengujian untuk memperbaiki mesin keputusan dan lakukan <em>regression testing</em> sebelum rilis.</p>
+      <a href="#!" class="cta-button">Hubungi QA Lead</a>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2024 Tim QA BankSejahtera &middot; Studi kasus pengujian black-box
+  </footer>
+  <script src="js/app.js"></script>
+</body>
+</html>
